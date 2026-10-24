@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rescheduled Invitation 💌✨</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts for romantic typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Cinzel:wght@600;700&family=Outfit:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+    <!-- Canvas Confetti CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        blush: '#FFF0F5',
+                        softPink: '#FFD1DC',
+                        roseGold: '#F49AC2',
+                        sweetPink: '#FF85A2',
+                        deepRose: '#E05297',
+                        cream: '#FFFDF9',
+                        cardBg: '#FFFFFF',
+                    },
+                    fontFamily: {
+                        handwriting: ['Caveat', 'cursive'],
+                        serifHeader: ['Playfair Display', 'serif'],
+                        cinzel: ['Cinzel', 'serif'],
+                        sans: ['Outfit', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'glow': '0 10px 30px -5px rgba(224, 82, 151, 0.35)',
+                        'envelope': '0 20px 40px rgba(224, 82, 151, 0.15), 0 5px 15px rgba(0,0,0,0.05)',
+                        'letter': '0 18px 40px rgba(244, 154, 194, 0.25)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Base Page Gradient */
+        body {
+            background: linear-gradient(135deg, #FFF0F5 0%, #FFD1DC 50%, #FFEBEF 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Floating Background Particles */
+        .bg-floating-hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .heart-particle {
+            position: absolute;
+            list-style: none;
+            opacity: 0.4;
+            animation: floatUp 10s infinite linear;
+            bottom: -50px;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) rotate(0deg) scale(0.8);
+                opacity: 0;
+            }
+            20% {
+                opacity: 0.6;
+            }
+            80% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-110vh) rotate(360deg) scale(1.2);
+                opacity: 0;
+            }
+        }
+
+        /* 3D Envelope & Card Transitions */
+        .perspective-1000 {
+            perspective: 1200px;
+        }
+
+        .envelope-container {
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Envelope Wax Seal Pulse */
+        @keyframes gentlePulse {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(224, 82, 151, 0.5);
+            }
+            50% {
+                transform: scale(1.08);
+                box-shadow: 0 0 0 16px rgba(224, 82, 151, 0);
+            }
+        }
+
+        .pulse-seal {
+            animation: gentlePulse 2.2s infinite;
+        }
+
+        /* Letter Reveal Smooth Scale & Slide */
+        .letter-card {
+            transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.5s ease;
+        }
+
+        /* Envelope Pattern Texture */
+        .envelope-bg {
+            background-color: #FFF5F8;
+            background-image: radial-gradient(#FFB6C1 0.8px, transparent 0.8px), radial-gradient(#FFB6C1 0.8px, #FFF5F8 0.8px);
+            background-size: 24px 24px;
+            background-position: 0 0, 12px 12px;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4 sm:p-6 text-gray-800 font-sans relative">
+
+    <!-- Floating Romantic Hearts Background Layer -->
+    <ul class="bg-floating-hearts" id="heartsContainer"></ul>
+
+    <!-- Main Content Container -->
+    <main class="relative z-10 w-full max-w-lg mx-auto flex flex-col items-center justify-center">
+
+        <!-- Header Tag -->
+        <div id="topHeader" class="text-center mb-5 transition-all duration-500">
+            <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/80 backdrop-blur-md text-deepRose text-xs sm:text-sm font-bold shadow-sm border border-sweetPink/30 uppercase tracking-wider">
+                <i class="fa-solid fa-heart text-xs text-sweetPink animate-pulse"></i> NEW MESSAGE ALERT FROM THE LOVE OF YOUR LIFE 💌✨
+            </span>
+        </div>
+
+        <!-- Envelope / Card Container -->
+        <div id="envelopeWrapper" class="perspective-1000 w-full relative flex flex-col items-center">
+
+            <!-- STATE 1: CLOSED ENVELOPE -->
+            <div id="envelope" class="envelope-container w-full bg-white rounded-3xl shadow-envelope relative border-2 border-sweetPink/40 cursor-pointer overflow-hidden transition-all duration-500 hover:shadow-glow">
+                
+                <div id="closedEnvelopeContent" class="p-8 sm:p-12 flex flex-col items-center justify-center text-center min-h-[340px] sm:min-h-[380px] relative envelope-bg">
+                    
+                    <!-- Postmark & Stamp -->
+                    <div class="absolute top-4 right-4 flex items-center gap-2 opacity-80">
+                        <div class="border-2 border-dashed border-deepRose/50 rounded-lg p-1 text-[10px] font-cinzel text-deepRose tracking-widest uppercase rotate-6 bg-white/70 shadow-sm">
+                            VIP PASS 💖
+                        </div>
+                        <div class="w-10 h-10 rounded-full border border-sweetPink/50 flex items-center justify-center text-[9px] text-deepRose font-cinzel rotate-[-12deg] bg-white/50">
+                            DBC • Mirdif
+                        </div>
+                    </div>
+
+                    <!-- Front Envelope Text -->
+                    <div class="mt-4 space-y-2">
+                        <p class="font-handwriting text-3xl sm:text-4xl text-deepRose font-bold">You've got mail! 💌</p>
+                        <h1 class="font-serifHeader text-2xl sm:text-3xl text-gray-800 font-bold tracking-wide">
+                            Rescheduled Invitation
+                        </h1>
+                        <p class="text-xs sm:text-sm text-gray-500 font-medium max-w-xs mx-auto">
+                            Because you deserve the sweetest date ever ❤️
+                        </p>
+                    </div>
+
+                    <!-- Wax Seal Click Button -->
+                    <div class="mt-8 relative group">
+                        <button id="openBtn" onclick="openEnvelope()" aria-label="Open Invitation" class="pulse-seal relative z-20 w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-tr from-deepRose via-sweetPink to-roseGold rounded-full flex items-center justify-center shadow-lg border-2 border-white transition-transform duration-300 group-hover:scale-110 active:scale-95">
+                            <div class="w-12 h-12 sm:w-16 sm:h-16 rounded-full border border-white/40 flex flex-col items-center justify-center text-white">
+                                <i class="fa-solid fa-heart text-lg sm:text-2xl text-white drop-shadow"></i>
+                                <span class="text-[9px] font-cinzel font-bold text-white tracking-widest mt-0.5">OPEN</span>
+                            </div>
+                        </button>
+                    </div>
+
+                    <!-- Helper Text -->
+                    <p class="mt-4 text-xs font-semibold text-deepRose tracking-wider uppercase animate-bounce">
+                        <i class="fa-solid fa-hand-pointer mr-1"></i> Tap the heart to open
+                    </p>
+                </div>
+
+            </div>
+
+            <!-- STATE 2: OPENED LETTER CARD -->
+            <div id="letterCard" class="hidden letter-card w-full bg-cardBg rounded-3xl shadow-letter border-2 border-sweetPink/40 p-6 sm:p-9 relative overflow-hidden my-2">
+                
+                <!-- Background Decorative Glows -->
+                <div class="absolute top-0 right-0 -mt-10 -mr-10 w-36 h-36 bg-softPink/40 rounded-full blur-2xl pointer-events-none"></div>
+                <div class="absolute bottom-0 left-0 -mb-10 -ml-10 w-36 h-36 bg-sweetPink/20 rounded-full blur-2xl pointer-events-none"></div>
+
+                <!-- Header Banner -->
+                <div class="text-center pb-5 border-b border-sweetPink/20 relative">
+                    <span class="text-2xl opacity-60 absolute left-2 top-0">🎳</span>
+                    <span class="text-2xl opacity-60 absolute right-2 top-0">🍩</span>
+                    
+                    <span class="inline-block px-3.5 py-1 bg-blush text-deepRose rounded-full text-xs font-bold tracking-widest uppercase mb-2 border border-sweetPink/30">
+                        Official Reschedule 💌
+                    </span>
+                    <h2 class="font-serifHeader text-2xl sm:text-3xl text-deepRose font-bold">
+                        Rescheduled Invitation
+                    </h2>
+                </div>
+
+                <!-- Letter Body -->
+                <div class="py-5 space-y-4 text-gray-700 leading-relaxed text-sm sm:text-base">
+                    
+                    <!-- To / From Banner -->
+                    <div class="bg-blush/60 p-3.5 rounded-2xl border border-sweetPink/30 space-y-1 font-sans text-sm">
+                        <p class="flex items-center gap-2">
+                            <span class="font-bold text-deepRose min-w-[55px]">To:</span> 
+                            <span class="font-semibold text-gray-800">My Favorite Person ❤️</span>
+                        </p>
+                        <p class="flex items-center gap-2">
+                            <span class="font-bold text-deepRose min-w-[55px]">From:</span> 
+                            <span class="text-gray-700">The guy who can't wait to hang out with you</span>
+                        </p>
+                    </div>
+
+                    <!-- Intro Text -->
+                    <p class="font-sans text-gray-700 text-center sm:text-left text-sm sm:text-base font-medium">
+                        Since our plans got shifted, I put together a brand new lineup for us! Here is what I have planned for our date:
+                    </p>
+
+                    <!-- Activity Itinerary Timeline -->
+                    <div class="space-y-3 my-3">
+                        
+                        <!-- Activity 1: Bowling -->
+                        <div class="bg-white p-4 rounded-2xl border border-sweetPink/30 shadow-sm flex items-start gap-3.5">
+                            <div class="w-9 h-9 rounded-xl bg-blush flex items-center justify-center text-deepRose shrink-0 text-lg shadow-inner">
+                                🎳
+                            </div>
+                            <div>
+                                <span class="block text-[11px] uppercase tracking-wider text-deepRose font-bold">First Stop</span>
+                                <span class="font-bold text-gray-800 text-sm sm:text-base">Bowling at Dubai Bowling Center (DBC)</span>
+                                <p class="text-xs text-gray-500 mt-0.5">Time to see who gets the most strikes!</p>
+                            </div>
+                        </div>
+
+                        <!-- Activity 2: Nando's Food -->
+                        <div class="bg-white p-4 rounded-2xl border border-sweetPink/30 shadow-sm flex items-start gap-3.5">
+                            <div class="w-9 h-9 rounded-xl bg-blush flex items-center justify-center text-deepRose shrink-0 text-lg shadow-inner">
+                                🍗
+                            </div>
+                            <div>
+                                <span class="block text-[11px] uppercase tracking-wider text-deepRose font-bold">Dinner & Food</span>
+                                <span class="font-bold text-gray-800 text-sm sm:text-base">Nando's at City Centre Mirdif</span>
+                                <p class="text-xs text-gray-500 mt-0.5">Delicious peri-peri chicken after bowling!</p>
+                            </div>
+                        </div>
+
+                        <!-- Activity 3: Dessert -->
+                        <div class="bg-white p-4 rounded-2xl border border-sweetPink/30 shadow-sm flex items-start gap-3.5">
+                            <div class="w-9 h-9 rounded-xl bg-blush flex items-center justify-center text-deepRose shrink-0 text-lg shadow-inner">
+                                🍩
+                            </div>
+                            <div>
+                                <span class="block text-[11px] uppercase tracking-wider text-deepRose font-bold">Sweet Treat</span>
+                                <span class="font-bold text-gray-800 text-sm sm:text-base">Bread Ahead Donuts OR Scoopable Cookie</span>
+                                <p class="text-xs text-gray-500 mt-0.5">At City Centre Mirdif (or whatever dessert you crave!)</p>
+                            </div>
+                        </div>
+
+                        <!-- Timing & Dress Code Grid -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+                            <div class="bg-blush/40 p-3 rounded-xl border border-sweetPink/20 text-xs">
+                                <span class="font-bold text-deepRose block mb-0.5">🕒 Date / Time</span>
+                                <span class="text-gray-700 font-medium">Whenever you're ready to roll out 🕒✨</span>
+                            </div>
+                            <div class="bg-blush/40 p-3 rounded-xl border border-sweetPink/20 text-xs">
+                                <span class="font-bold text-deepRose block mb-0.5">👗 Dress Code</span>
+                                <span class="text-gray-700 font-medium">Whatever makes you happy! 🥰</span>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Closing Note -->
+                    <div class="text-center pt-2">
+                        <p class="font-handwriting text-2xl sm:text-3xl text-deepRose font-bold">
+                            Let me know when you're ready, beautiful! 😘
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Interactive RSVP Buttons -->
+                <div class="pt-4 border-t border-sweetPink/20 flex flex-col sm:flex-row gap-2.5 justify-center items-center">
+                    
+                    <!-- Primary Option -->
+                    <button onclick="handleRSVP('yes')" class="w-full sm:w-auto flex-1 bg-gradient-to-r from-deepRose via-sweetPink to-roseGold hover:opacity-95 text-white font-semibold py-3 px-6 rounded-xl shadow-md transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2 group">
+                        <span>I'm so excited! Let's go! 🎳✨</span>
+                    </button>
+
+                    <!-- Secondary Option -->
+                    <button onclick="handleRSVP('later')" class="w-full sm:w-auto bg-white hover:bg-blush text-gray-700 hover:text-deepRose font-medium py-3 px-5 rounded-xl border border-sweetPink/40 shadow-sm transition-all duration-300 flex items-center justify-center gap-2 text-sm">
+                        <span>Let me get ready 💄</span>
+                    </button>
+                </div>
+
+                <!-- Re-close link -->
+                <div class="text-center mt-5">
+                    <button onclick="closeEnvelope()" class="text-xs text-gray-400 hover:text-deepRose transition-colors underline decoration-dotted">
+                        <i class="fa-solid fa-envelope text-[10px] mr-1"></i> Close envelope view
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Modal Dialog for RSVP Confirmation -->
+    <div id="rsvpModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300">
+        <div id="modalContent" class="bg-white rounded-3xl max-w-sm w-full p-6 text-center shadow-2xl border-2 border-sweetPink/40 transform scale-90 transition-transform duration-300 relative">
+            
+            <div id="modalIconContainer" class="w-16 h-16 rounded-full bg-blush mx-auto flex items-center justify-center text-deepRose text-3xl mb-4 shadow-inner">
+                <i id="modalIcon" class="fa-solid fa-heart"></i>
+            </div>
+
+            <h3 id="modalTitle" class="font-serifHeader text-xl font-bold text-gray-800 mb-2"></h3>
+            <p id="modalMessage" class="text-gray-600 text-sm leading-relaxed mb-6"></p>
+
+            <button onclick="closeModal()" class="w-full bg-gradient-to-r from-deepRose to-sweetPink hover:opacity-90 text-white font-semibold py-2.5 rounded-xl shadow transition-colors">
+                Can't Wait! ❤️
+            </button>
+        </div>
+    </div>
+
+    <!-- JavaScript Interactions & Web Audio API -->
+    <script>
+        // Web Audio API Synth for audio feedback
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        let audioCtx;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new AudioContext();
+            }
+        }
+
+        function playChimeSound() {
+            try {
+                initAudio();
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+                const now = audioCtx.currentTime;
+                [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(freq, now + (idx * 0.07));
+                    
+                    gain.gain.setValueAtTime(0.01, now + (idx * 0.07));
+                    gain.gain.exponentialRampToValueAtTime(0.12, now + (idx * 0.07) + 0.04);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + (idx * 0.07) + 0.5);
+                    
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    
+                    osc.start(now + (idx * 0.07));
+                    osc.stop(now + (idx * 0.07) + 0.6);
+                });
+            } catch (e) {}
+        }
+
+        function playPopSound() {
+            try {
+                initAudio();
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(450, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(900, audioCtx.currentTime + 0.08);
+                
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.08);
+                
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.08);
+            } catch (e) {}
+        }
+
+        // Generate Floating Background Particles
+        function createFloatingHearts() {
+            const container = document.getElementById('heartsContainer');
+            const icons = ['💖', '💕', '🎳', '🍩', '🌸', '✨', '🍪'];
+            const heartCount = 18;
+
+            for (let i = 0; i < heartCount; i++) {
+                const li = document.createElement('li');
+                li.className = 'heart-particle';
+                li.innerText = icons[Math.floor(Math.random() * icons.length)];
+                li.style.left = `${Math.random() * 100}%`;
+                li.style.animationDelay = `${Math.random() * 8}s`;
+                li.style.animationDuration = `${7 + Math.random() * 8}s`;
+                li.style.fontSize = `${14 + Math.random() * 16}px`;
+                container.appendChild(li);
+            }
+        }
+
+        // Open Envelope Function
+        function openEnvelope() {
+            playChimeSound();
+
+            const envelope = document.getElementById('envelope');
+            const letterCard = document.getElementById('letterCard');
+
+            envelope.classList.add('opacity-0', 'scale-95');
+            
+            setTimeout(() => {
+                envelope.classList.add('hidden');
+                letterCard.classList.remove('hidden');
+                
+                setTimeout(() => {
+                    letterCard.classList.add('opacity-100', 'scale-100');
+                    triggerMiniConfetti();
+                }, 50);
+            }, 350);
+        }
+
+        // Close Envelope Function
+        function closeEnvelope() {
+            playPopSound();
+            const letterCard = document.getElementById('letterCard');
+            const envelope = document.getElementById('envelope');
+
+            letterCard.classList.remove('opacity-100', 'scale-100');
+            
+            setTimeout(() => {
+                letterCard.classList.add('hidden');
+                envelope.classList.remove('hidden');
+                
+                setTimeout(() => {
+                    envelope.classList.remove('opacity-0', 'scale-95');
+                }, 50);
+            }, 350);
+        }
+
+        // Confetti FX
+        function triggerMiniConfetti() {
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 40,
+                    spread: 70,
+                    origin: { y: 0.6 },
+                    colors: ['#FF85A2', '#F49AC2', '#FFD1DC', '#E05297']
+                });
+            }
+        }
+
+        function triggerFullConfetti() {
+            if (typeof confetti === 'function') {
+                const duration = 2.5 * 1000;
+                const animationEnd = Date.now() + duration;
+
+                (function frame() {
+                    confetti({
+                        particleCount: 6,
+                        angle: 60,
+                        spread: 55,
+                        origin: { x: 0 },
+                        colors: ['#FF85A2', '#F49AC2', '#E05297']
+                    });
+                    confetti({
+                        particleCount: 6,
+                        angle: 120,
+                        spread: 55,
+                        origin: { x: 1 },
+                        colors: ['#FF85A2', '#F49AC2', '#E05297']
+                    });
+
+                    if (Date.now() < animationEnd) {
+                        requestAnimationFrame(frame);
+                    }
+                }());
+            }
+        }
+
+        // RSVP Response Modal Logic
+        function handleRSVP(type) {
+            playPopSound();
+            const modal = document.getElementById('rsvpModal');
+            const modalContent = document.getElementById('modalContent');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalMessage = document.getElementById('modalMessage');
+            const modalIcon = document.getElementById('modalIcon');
+
+            if (type === 'yes') {
+                triggerFullConfetti();
+                modalIcon.className = "fa-solid fa-heart text-deepRose";
+                modalTitle.innerText = "YAY! IT'S A DATE! 🎳🎉";
+                modalMessage.innerText = "Get ready for strikes, Nando's, and the best donuts/cookies! Text me when you're ready! ❤️";
+            } else {
+                modalIcon.className = "fa-solid fa-sparkles text-sweetPink";
+                modalTitle.innerText = "Take your time! ✨";
+                modalMessage.innerText = "No rush at all! Take your time getting ready, beautiful. I'm ready whenever you are 🥰";
+            }
+
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            modalContent.classList.remove('scale-90');
+            modalContent.classList.add('scale-100');
+        }
+
+        function closeModal() {
+            playPopSound();
+            const modal = document.getElementById('rsvpModal');
+            const modalContent = document.getElementById('modalContent');
+
+            modalContent.classList.remove('scale-100');
+            modalContent.classList.add('scale-90');
+            modal.classList.add('opacity-0', 'pointer-events-none');
+        }
+
+        window.onload = function() {
+            createFloatingHearts();
+        };
+    </script>
+</body>
+</html>
